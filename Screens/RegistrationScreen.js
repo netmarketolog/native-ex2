@@ -32,13 +32,13 @@ export default function RegistrationScreen() {
       <View
         style={{
           ...styles.wrapper,
-          height: isShowKeyboard ? "82%" : "67%",
+          // height: isShowKeyboard ? "82%" : "67%",
         }}
       >
         <View
           style={{
             ...styles.formContainer,
-            marginBottom: isShowKeyboard ? 32 : 78,
+            // marginBottom: isShowKeyboard ? 32 : 78,
           }}
         >
           <View>
@@ -50,9 +50,6 @@ export default function RegistrationScreen() {
                   onChangeText={loginHandler}
                   placeholder="Login"
                   style={styles.input}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                  }}
                 />
               </View>
               <View style={{ marginTop: 16 }}>
@@ -61,9 +58,6 @@ export default function RegistrationScreen() {
                   onChangeText={emailHandler}
                   placeholder="Email"
                   style={styles.input}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                  }}
                 />
               </View>
               <View style={{ marginTop: 16 }}>
@@ -73,9 +67,6 @@ export default function RegistrationScreen() {
                   placeholder="Password"
                   secureTextEntry={true}
                   style={styles.input}
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                  }}
                 />
               </View>
             </View>
@@ -109,8 +100,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
+
     backgroundColor: "#fff",
     width: "100%",
+    height: "67%",
 
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -120,6 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     marginHorizontal: 32,
+    marginBottom: 78,
   },
   formTitle: {
     marginBottom: 32,
