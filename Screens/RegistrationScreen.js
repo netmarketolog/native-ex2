@@ -20,6 +20,11 @@ export default function RegistrationScreen() {
   const [password, setPassword] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
@@ -73,18 +78,22 @@ export default function RegistrationScreen() {
               </View>
             </View>
           </View>
-          {isShowKeyboard ? (
+          {/* {isShowKeyboard ? (
             ""
-          ) : (
-            <View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.btn}>
-                <Text style={styles.btnText}>Registration</Text>
-              </TouchableOpacity>
-              <Text style={styles.textLink}>
-                Do you already have an account? Log-in?
-              </Text>
-            </View>
-          )}
+          ) : ( */}
+          <View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.btn}
+              onPress={keyboardHide}
+            >
+              <Text style={styles.btnText}>Registration</Text>
+            </TouchableOpacity>
+            <Text style={styles.textLink}>
+              Do you already have an account? Log-in?
+            </Text>
+          </View>
+          {/* )} */}
         </View>
       </KeyboardAvoidingView>
     </ImageBackground>
