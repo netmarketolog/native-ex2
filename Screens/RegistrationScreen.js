@@ -29,64 +29,64 @@ export default function RegistrationScreen() {
       source={require("../img/photoBG.png")}
       style={styles.image}
     >
-      <View
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{
           ...styles.wrapper,
-          // height: isShowKeyboard ? "82%" : "67%",
+          height: isShowKeyboard ? "82%" : "67%",
         }}
       >
-        <KeyboardAvoidingView style={{ flex: 1 }}>
-          <View
-            style={{
-              ...styles.formContainer,
-              // marginBottom: isShowKeyboard ? 32 : 78,
-            }}
-          >
+        <View
+          style={{
+            ...styles.formContainer,
+            marginBottom: isShowKeyboard ? 32 : 78,
+          }}
+        >
+          <View>
+            <Text style={styles.formTitle}>Registration</Text>
             <View>
-              <Text style={styles.formTitle}>Registration</Text>
               <View>
-                <View>
-                  <TextInput
-                    value={login}
-                    onChangeText={loginHandler}
-                    placeholder="Login"
-                    style={styles.input}
-                  />
-                </View>
-                <View style={{ marginTop: 16 }}>
-                  <TextInput
-                    value={email}
-                    onChangeText={emailHandler}
-                    placeholder="Email"
-                    style={styles.input}
-                  />
-                </View>
-                <View style={{ marginTop: 16 }}>
-                  <TextInput
-                    value={password}
-                    onChangeText={passwordHandler}
-                    placeholder="Password"
-                    secureTextEntry={true}
-                    style={styles.input}
-                  />
-                </View>
+                <TextInput
+                  value={login}
+                  onChangeText={loginHandler}
+                  placeholder="Login"
+                  style={styles.input}
+                  onFocus={() => setIsShowKeyboard(true)}
+                />
+              </View>
+              <View style={{ marginTop: 16 }}>
+                <TextInput
+                  value={email}
+                  onChangeText={emailHandler}
+                  placeholder="Email"
+                  style={styles.input}
+                />
+              </View>
+              <View style={{ marginTop: 16 }}>
+                <TextInput
+                  value={password}
+                  onChangeText={passwordHandler}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  style={styles.input}
+                />
               </View>
             </View>
-            {isShowKeyboard ? (
-              ""
-            ) : (
-              <View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.btn}>
-                  <Text style={styles.btnText}>Registration</Text>
-                </TouchableOpacity>
-                <Text style={styles.textLink}>
-                  Do you already have an account? Log-in?
-                </Text>
-              </View>
-            )}
           </View>
-        </KeyboardAvoidingView>
-      </View>
+          {isShowKeyboard ? (
+            ""
+          ) : (
+            <View>
+              <TouchableOpacity activeOpacity={0.7} style={styles.btn}>
+                <Text style={styles.btnText}>Registration</Text>
+              </TouchableOpacity>
+              <Text style={styles.textLink}>
+                Do you already have an account? Log-in?
+              </Text>
+            </View>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 }
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     marginHorizontal: 32,
-    marginBottom: 78,
   },
   formTitle: {
     marginBottom: 32,
