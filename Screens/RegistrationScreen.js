@@ -34,14 +34,14 @@ export default function RegistrationScreen() {
       source={require("../img/photoBG.png")}
       style={styles.image}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      <View
         style={{
           ...styles.wrapper,
           height: isShowKeyboard ? "82%" : "67%",
         }}
       >
-        <View
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{
             ...styles.formContainer,
             marginBottom: isShowKeyboard ? 32 : 78,
@@ -94,8 +94,8 @@ export default function RegistrationScreen() {
             </Text>
           </View>
           {/* )} */}
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </View>
     </ImageBackground>
   );
 }
