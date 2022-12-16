@@ -25,6 +25,12 @@ export default function RegistrationScreen() {
     Keyboard.dismiss();
   };
 
+  const reset = () => {
+    setLogin("");
+    setEmail("");
+    setPassword("");
+  };
+
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
@@ -86,7 +92,7 @@ export default function RegistrationScreen() {
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.btn}
-                  onPress={keyboardHide}
+                  onPress={(keyboardHide, reset)}
                 >
                   <Text style={styles.btnText}>Registration</Text>
                 </TouchableOpacity>
@@ -133,6 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
+    fontFamily: "Roboto-Regular",
   },
   input: {
     width: "100%",
