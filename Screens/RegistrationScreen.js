@@ -30,73 +30,75 @@ export default function RegistrationScreen() {
   const passwordHandler = (text) => setPassword(text);
 
   return (
-    <ImageBackground
-      source={require("../img/photoBG.png")}
-      style={styles.image}
-    >
-      <View
-        style={{
-          ...styles.wrapper,
-          height: isShowKeyboard ? "82%" : "67%",
-        }}
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <ImageBackground
+        source={require("../img/photoBG.png")}
+        style={styles.image}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        <View
           style={{
-            ...styles.formContainer,
-            marginBottom: isShowKeyboard ? 32 : 78,
+            ...styles.wrapper,
+            height: isShowKeyboard ? "82%" : "67%",
           }}
         >
-          <View>
-            <Text style={styles.formTitle}>Registration</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{
+              ...styles.formContainer,
+              marginBottom: isShowKeyboard ? 32 : 78,
+            }}
+          >
             <View>
+              <Text style={styles.formTitle}>Registration</Text>
               <View>
-                <TextInput
-                  value={login}
-                  onChangeText={loginHandler}
-                  placeholder="Login"
-                  style={styles.input}
-                  onFocus={() => setIsShowKeyboard(true)}
-                />
-              </View>
-              <View style={{ marginTop: 16 }}>
-                <TextInput
-                  value={email}
-                  onChangeText={emailHandler}
-                  placeholder="Email"
-                  style={styles.input}
-                />
-              </View>
-              <View style={{ marginTop: 16 }}>
-                <TextInput
-                  value={password}
-                  onChangeText={passwordHandler}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  style={styles.input}
-                />
+                <View>
+                  <TextInput
+                    value={login}
+                    onChangeText={loginHandler}
+                    placeholder="Login"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    value={email}
+                    onChangeText={emailHandler}
+                    placeholder="Email"
+                    style={styles.input}
+                  />
+                </View>
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    value={password}
+                    onChangeText={passwordHandler}
+                    placeholder="Password"
+                    secureTextEntry={true}
+                    style={styles.input}
+                  />
+                </View>
               </View>
             </View>
-          </View>
-          {/* {isShowKeyboard ? (
-            ""
-          ) : ( */}
-          <View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.btn}
-              onPress={keyboardHide}
-            >
-              <Text style={styles.btnText}>Registration</Text>
-            </TouchableOpacity>
-            <Text style={styles.textLink}>
-              Do you already have an account? Log-in?
-            </Text>
-          </View>
-          {/* )} */}
-        </KeyboardAvoidingView>
-      </View>
-    </ImageBackground>
+            {isShowKeyboard ? (
+              ""
+            ) : (
+              <View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.btn}
+                  onPress={keyboardHide}
+                >
+                  <Text style={styles.btnText}>Registration</Text>
+                </TouchableOpacity>
+                <Text style={styles.textLink}>
+                  Do you already have an account? Log-in?
+                </Text>
+              </View>
+            )}
+          </KeyboardAvoidingView>
+        </View>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
