@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   ImageBackground,
@@ -6,19 +6,32 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Alert,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Dimensions,
+  Image,
 } from "react-native";
+
+const windowWidth = Dimensions.get("window").width - 16 * 2;
 
 export default function RegistrationScreen() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [widthState, setWidthState] = useState(windowWidth);
+  const [isOpenPassword, setIsOpenPassword] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setWidthState(windowWidth);
+    const subscription = Dimensions.addEventListener("change", onChange);
+    return () => {
+      () => subscription?.remove();
+    };
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -34,6 +47,7 @@ export default function RegistrationScreen() {
   const loginHandler = (text) => setLogin(text);
   const emailHandler = (text) => setEmail(text);
   const passwordHandler = (text) => setPassword(text);
+  const isOpenPasswordHandler = () => setIsOpenPassword(!isOpenPassword);
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -47,44 +61,60 @@ export default function RegistrationScreen() {
             height: isShowKeyboard ? "82%" : "67%",
           }}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          <View
             style={{
               ...styles.formContainer,
               marginBottom: isShowKeyboard ? 32 : 78,
+              width: widthState,
             }}
           >
-            <View>
-              <Text style={styles.formTitle}>Registration</Text>
-              <View>
-                <View>
-                  <TextInput
-                    value={login}
-                    onChangeText={loginHandler}
-                    placeholder="Login"
-                    style={styles.input}
-                    onFocus={() => setIsShowKeyboard(true)}
-                  />
-                </View>
-                <View style={{ marginTop: 16 }}>
-                  <TextInput
-                    value={email}
-                    onChangeText={emailHandler}
-                    placeholder="Email"
-                    style={styles.input}
-                  />
-                </View>
-                <View style={{ marginTop: 16 }}>
-                  <TextInput
-                    value={password}
-                    onChangeText={passwordHandler}
-                    placeholder="Password"
-                    secureTextEntry={true}
-                    style={styles.input}
-                  />
+            <View style={styles.avaWrapper}>
+              <View style={styles.avatar}>
+                <View style={styles.addPhoto}>
+                  <Image source={require("../img/add.png")} />
                 </View>
               </View>
             </View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <View>
+                <Text style={styles.formTitle}>Registration</Text>
+                <View>
+                  <View>
+                    <TextInput
+                      value={login}
+                      onChangeText={loginHandler}
+                      placeholder="Login"
+                      style={styles.input}
+                      onFocus={() => setIsShowKeyboard(true)}
+                    />
+                  </View>
+                  <View style={{ marginTop: 16 }}>
+                    <TextInput
+                      value={email}
+                      onChangeText={emailHandler}
+                      placeholder="Email"
+                      style={styles.input}
+                      onFocus={() => setIsShowKeyboard(true)}
+                    />
+                  </View>
+                  <View style={{ marginTop: 16 }}>
+                    <TextInput
+                      value={password}
+                      onChangeText={passwordHandler}
+                      placeholder="Password"
+                      secureTextEntry={!isOpenPassword}
+                      style={styles.input}
+                      onFocus={() => setIsShowKeyboard(true)}
+                    />
+                    <Text style={styles.show} onPress={isOpenPasswordHandler}>
+                      {isOpenPassword ? "hide" : "show"}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </KeyboardAvoidingView>
             {isShowKeyboard ? (
               ""
             ) : (
@@ -101,7 +131,7 @@ export default function RegistrationScreen() {
                 </Text>
               </View>
             )}
-          </KeyboardAvoidingView>
+          </View>
         </View>
       </ImageBackground>
     </TouchableWithoutFeedback>
@@ -120,19 +150,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
-
+    alignItems: "center",
     backgroundColor: "#fff",
     width: "100%",
     height: "67%",
 
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingHorizontal: 16,
   },
   formContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    marginHorizontal: 32,
   },
   formTitle: {
     marginBottom: 32,
@@ -142,7 +170,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
   },
   input: {
-    width: "100%",
     height: 50,
     padding: 16,
     backgroundColor: "#F6F6F6",
@@ -151,6 +178,11 @@ const styles = StyleSheet.create({
 
     borderRadius: 8,
     fontFamily: "Roboto-Regular",
+  },
+  show: {
+    position: "absolute",
+    right: 10,
+    top: 15,
   },
 
   btn: {
@@ -172,5 +204,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#1B4371",
+  },
+
+  avaWrapper: {
+    position: "absolute",
+    top: -60,
+    width: "100%",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    backgroundColor: "#F6F6F6",
+    marginHorizontal: "auto",
+  },
+  addPhoto: {
+    position: "absolute",
+    right: -12.5,
+    bottom: 14,
   },
 });
