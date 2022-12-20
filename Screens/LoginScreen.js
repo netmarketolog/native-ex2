@@ -9,18 +9,19 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
-  Image,
 } from "react-native";
 
 const windowWidth = Dimensions.get("window").width - 16 * 2;
 
-export default function LoginScreen() {
+export default function LoginScreen({
+  keyboardHide,
+  setIsShowKeyboard,
+  isShowKeyboard,
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [widthState, setWidthState] = useState(windowWidth);
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
@@ -31,11 +32,6 @@ export default function LoginScreen() {
       () => subscription?.remove();
     };
   }, []);
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
 
   const reset = () => {
     setEmail("");
@@ -48,85 +44,73 @@ export default function LoginScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <ImageBackground
-        source={require("../img/photoBG.png")}
-        style={styles.image}
+      <View
+        style={{
+          ...styles.wrapper,
+          height: isShowKeyboard ? "82%" : "67%",
+        }}
       >
         <View
           style={{
-            ...styles.wrapper,
-            height: isShowKeyboard ? "82%" : "67%",
+            ...styles.formContainer,
+            marginBottom: isShowKeyboard ? 32 : 144,
+            width: widthState,
           }}
         >
-          <View
-            style={{
-              ...styles.formContainer,
-              marginBottom: isShowKeyboard ? 32 : 78,
-              width: widthState,
-            }}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
+            <View>
+              <Text style={styles.formTitle}>Login</Text>
               <View>
-                <Text style={styles.formTitle}>Login</Text>
                 <View>
-                  <View>
-                    <TextInput
-                      value={email}
-                      onChangeText={emailHandler}
-                      placeholder="Email"
-                      style={styles.input}
-                      onFocus={() => setIsShowKeyboard(true)}
-                    />
-                  </View>
-                  <View style={{ marginTop: 16 }}>
-                    <TextInput
-                      value={password}
-                      onChangeText={passwordHandler}
-                      placeholder="Password"
-                      secureTextEntry={!isOpenPassword}
-                      style={styles.input}
-                      onFocus={() => setIsShowKeyboard(true)}
-                    />
-                    <Text style={styles.show} onPress={isOpenPasswordHandler}>
-                      {isOpenPassword ? "hide" : "show"}
-                    </Text>
-                  </View>
+                  <TextInput
+                    value={email}
+                    onChangeText={emailHandler}
+                    placeholder="Email"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    value={password}
+                    onChangeText={passwordHandler}
+                    placeholder="Password"
+                    secureTextEntry={!isOpenPassword}
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                  <Text style={styles.show} onPress={isOpenPasswordHandler}>
+                    {isOpenPassword ? "hide" : "show"}
+                  </Text>
                 </View>
               </View>
-            </KeyboardAvoidingView>
-            {isShowKeyboard ? (
-              ""
-            ) : (
-              <View>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={styles.btn}
-                  onPress={(keyboardHide, reset)}
-                >
-                  <Text style={styles.btnText}>Login</Text>
-                </TouchableOpacity>
-                <Text style={styles.textLink}>
-                  Don't have an account? Register?
-                </Text>
-              </View>
-            )}
-          </View>
+            </View>
+          </KeyboardAvoidingView>
+          {isShowKeyboard ? (
+            ""
+          ) : (
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.btn}
+                onPress={(keyboardHide, reset)}
+              >
+                <Text style={styles.btnText}>Login</Text>
+              </TouchableOpacity>
+              <Text style={styles.textLink}>
+                Don't have an account? Register?
+              </Text>
+            </View>
+          )}
         </View>
-      </ImageBackground>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    // justifyContent: "center",
-    justifyContent: "flex-end",
-    // alignItems: "center",
-  },
   wrapper: {
     position: "absolute",
     bottom: 0,
@@ -134,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     width: "100%",
-    height: "67%",
+    height: "60%",
 
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,

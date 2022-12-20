@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
   TouchableWithoutFeedback,
   Dimensions,
   Image,
@@ -17,11 +16,14 @@ import {
 
 const windowWidth = Dimensions.get("window").width - 16 * 2;
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen({
+  keyboardHide,
+  setIsShowKeyboard,
+  isShowKeyboard,
+}) {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [widthState, setWidthState] = useState(windowWidth);
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
@@ -32,11 +34,6 @@ export default function RegistrationScreen() {
       () => subscription?.remove();
     };
   }, []);
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
 
   const reset = () => {
     setLogin("");
@@ -51,101 +48,89 @@ export default function RegistrationScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <ImageBackground
-        source={require("../img/photoBG.png")}
-        style={styles.image}
+      <View
+        style={{
+          ...styles.wrapper,
+          height: isShowKeyboard ? "82%" : "67%",
+        }}
       >
         <View
           style={{
-            ...styles.wrapper,
-            height: isShowKeyboard ? "82%" : "67%",
+            ...styles.formContainer,
+            marginBottom: isShowKeyboard ? 32 : 78,
+            width: widthState,
           }}
         >
-          <View
-            style={{
-              ...styles.formContainer,
-              marginBottom: isShowKeyboard ? 32 : 78,
-              width: widthState,
-            }}
+          <View style={styles.avaWrapper}>
+            <View style={styles.avatar}>
+              <View style={styles.addPhoto}>
+                <Image source={require("../img/add.png")} />
+              </View>
+            </View>
+          </View>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View style={styles.avaWrapper}>
-              <View style={styles.avatar}>
-                <View style={styles.addPhoto}>
-                  <Image source={require("../img/add.png")} />
+            <View>
+              <Text style={styles.formTitle}>Registration</Text>
+              <View>
+                <View>
+                  <TextInput
+                    value={login}
+                    onChangeText={loginHandler}
+                    placeholder="Login"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    value={email}
+                    onChangeText={emailHandler}
+                    placeholder="Email"
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                </View>
+                <View style={{ marginTop: 16 }}>
+                  <TextInput
+                    value={password}
+                    onChangeText={passwordHandler}
+                    placeholder="Password"
+                    secureTextEntry={!isOpenPassword}
+                    style={styles.input}
+                    onFocus={() => setIsShowKeyboard(true)}
+                  />
+                  <Text style={styles.show} onPress={isOpenPasswordHandler}>
+                    {isOpenPassword ? "hide" : "show"}
+                  </Text>
                 </View>
               </View>
             </View>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
-              <View>
-                <Text style={styles.formTitle}>Registration</Text>
-                <View>
-                  <View>
-                    <TextInput
-                      value={login}
-                      onChangeText={loginHandler}
-                      placeholder="Login"
-                      style={styles.input}
-                      onFocus={() => setIsShowKeyboard(true)}
-                    />
-                  </View>
-                  <View style={{ marginTop: 16 }}>
-                    <TextInput
-                      value={email}
-                      onChangeText={emailHandler}
-                      placeholder="Email"
-                      style={styles.input}
-                      onFocus={() => setIsShowKeyboard(true)}
-                    />
-                  </View>
-                  <View style={{ marginTop: 16 }}>
-                    <TextInput
-                      value={password}
-                      onChangeText={passwordHandler}
-                      placeholder="Password"
-                      secureTextEntry={!isOpenPassword}
-                      style={styles.input}
-                      onFocus={() => setIsShowKeyboard(true)}
-                    />
-                    <Text style={styles.show} onPress={isOpenPasswordHandler}>
-                      {isOpenPassword ? "hide" : "show"}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </KeyboardAvoidingView>
-            {isShowKeyboard ? (
-              ""
-            ) : (
-              <View>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={styles.btn}
-                  onPress={(keyboardHide, reset)}
-                >
-                  <Text style={styles.btnText}>Registration</Text>
-                </TouchableOpacity>
-                <Text style={styles.textLink}>
-                  Do you already have an account? Log-in?
-                </Text>
-              </View>
-            )}
-          </View>
+          </KeyboardAvoidingView>
+          {isShowKeyboard ? (
+            ""
+          ) : (
+            <View>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.btn}
+                onPress={(keyboardHide, reset)}
+              >
+                <Text style={styles.btnText}>Registration</Text>
+              </TouchableOpacity>
+              <Text style={styles.textLink}>
+                Do you already have an account? Log-in?
+              </Text>
+            </View>
+          )}
         </View>
-      </ImageBackground>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    // justifyContent: "center",
-    justifyContent: "flex-end",
-    // alignItems: "center",
-  },
   wrapper: {
     position: "absolute",
     bottom: 0,
