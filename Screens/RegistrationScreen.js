@@ -51,7 +51,6 @@ export default function RegistrationScreen({
       <View
         style={{
           ...styles.wrapper,
-          height: isShowKeyboard ? "82%" : "67%",
         }}
       >
         <View
@@ -71,7 +70,7 @@ export default function RegistrationScreen({
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View>
+            <View style={styles}>
               <Text style={styles.formTitle}>Registration</Text>
               <View>
                 <View>
@@ -81,6 +80,7 @@ export default function RegistrationScreen({
                     placeholder="Login"
                     style={styles.input}
                     onFocus={() => setIsShowKeyboard(true)}
+                    onSubmitEditing={keyboardHide}
                   />
                 </View>
                 <View style={{ marginTop: 16 }}>
@@ -90,6 +90,7 @@ export default function RegistrationScreen({
                     placeholder="Email"
                     style={styles.input}
                     onFocus={() => setIsShowKeyboard(true)}
+                    onSubmitEditing={keyboardHide}
                   />
                 </View>
                 <View style={{ marginTop: 16 }}>
@@ -100,6 +101,7 @@ export default function RegistrationScreen({
                     secureTextEntry={!isOpenPassword}
                     style={styles.input}
                     onFocus={() => setIsShowKeyboard(true)}
+                    onSubmitEditing={keyboardHide}
                   />
                   <Text style={styles.show} onPress={isOpenPasswordHandler}>
                     {isOpenPassword ? "hide" : "show"}
