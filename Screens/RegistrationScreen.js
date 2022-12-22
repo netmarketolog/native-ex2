@@ -48,11 +48,7 @@ export default function RegistrationScreen({
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View
-        style={{
-          ...styles.wrapper,
-        }}
-      >
+      <View style={styles.wrapper}>
         <View
           style={{
             ...styles.formContainer,

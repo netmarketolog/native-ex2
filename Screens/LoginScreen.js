@@ -44,12 +44,7 @@ export default function LoginScreen({
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View
-        style={{
-          ...styles.wrapper,
-          height: isShowKeyboard ? "82%" : "67%",
-        }}
-      >
+      <View style={styles.wrapper}>
         <View
           style={{
             ...styles.formContainer,
