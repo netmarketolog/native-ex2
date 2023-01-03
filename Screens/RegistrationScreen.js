@@ -47,25 +47,25 @@ export default function RegistrationScreen({
   const isOpenPasswordHandler = () => setIsOpenPassword(!isOpenPassword);
 
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.wrapper}>
-        <View
-          style={{
-            ...styles.formContainer,
-            marginBottom: isShowKeyboard ? 32 : 78,
-            width: widthState,
-          }}
-        >
-          <View style={styles.avaWrapper}>
-            <View style={styles.avatar}>
-              <View style={styles.addPhoto}>
-                <Image source={require("../img/add.png")} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={keyboardHide}>
+        <View style={styles.wrapper}>
+          <View
+            style={{
+              marginBottom: isShowKeyboard ? 32 : 78,
+              width: widthState,
+            }}
+          >
+            <View style={styles.avaWrapper}>
+              <View style={styles.avatar}>
+                <View style={styles.addPhoto}>
+                  <Image source={require("../img/add.png")} />
+                </View>
               </View>
             </View>
-          </View>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-          >
             <View style={styles}>
               <Text style={styles.formTitle}>Registration</Text>
               <View>
@@ -105,47 +105,52 @@ export default function RegistrationScreen({
                 </View>
               </View>
             </View>
-          </KeyboardAvoidingView>
-          {isShowKeyboard ? (
-            ""
-          ) : (
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.btn}
-                onPress={(keyboardHide, reset)}
-              >
-                <Text style={styles.btnText}>Registration</Text>
-              </TouchableOpacity>
-              <Text style={styles.textLink}>
-                Do you already have an account? Log-in?
-              </Text>
-            </View>
-          )}
+            {isShowKeyboard ? (
+              ""
+            ) : (
+              <View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.btn}
+                  onPress={(keyboardHide, reset)}
+                >
+                  <Text style={styles.btnText}>Registration</Text>
+                </TouchableOpacity>
+                <Text style={styles.textLink}>
+                  Do you already have an account? Log-in?
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    alignItems: "center",
-    backgroundColor: "#fff",
-    width: "100%",
-    height: "67%",
+    // position: "absolute",
+    // bottom: 0,
+    // left: 0,
+    // alignItems: "center",
+    // backgroundColor: "#fff",
+    // width: "100%",
+    // height: "67%",
 
+    // borderTopLeftRadius: 30,
+    // borderTopRightRadius: 30,
+    backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+    paddingHorizontal: 16,
   },
-  formContainer: {
+  container: {
     flex: 1,
     justifyContent: "flex-end",
   },
   formTitle: {
+    marginTop: 92,
     marginBottom: 32,
     fontSize: 30,
     lineHeight: 35,
