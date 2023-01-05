@@ -1,31 +1,22 @@
-import React, { useCallback, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  View,
-  Keyboard,
-  ImageBackground,
-  TouchableWithoutFeedback,
-} from "react-native";
-import LoginScreen from "./Screens/LoginScreen";
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import React, { useCallback } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
+import { NavigationContainer } from "@react-navigation/native";
+
+import { useRoute } from "./router";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const routing = useRoute(true);
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Italic": require("./assets/fonts/Roboto-Italic.ttf"),
   });
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-  };
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -37,39 +28,16 @@ export default function App() {
     return null;
   }
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-        <ImageBackground
-          source={require("./img/photoBG.png")}
-          style={styles.image}
-        >
-          {/* <LoginScreen
-            keyboardHide={keyboardHide}
-            setIsShowKeyboard={setIsShowKeyboard}
-            isShowKeyboard={isShowKeyboard}
-          /> */}
-          <RegistrationScreen
-            keyboardHide={keyboardHide}
-            setIsShowKeyboard={setIsShowKeyboard}
-            isShowKeyboard={isShowKeyboard}
-          />
-
-          <StatusBar />
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      <NavigationContainer>{routing}</NavigationContainer>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    // justifyContent: "center",
-    justifyContent: "flex-end",
-    // alignItems: "center",
-  },
   container: {
     flex: 1,
   },
 });
+
+// auth
