@@ -6,8 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoginScreen from "./Screens/auth/LoginScreen";
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
-import PostsScreen from "./Screens/mainScreen/PostsScreen";
-import CreatePostScreen from "./Screens/mainScreen/CreatePostScreen";
+import PostsScreen from "./Screens/mainScreen/PostScreen/PostsScreen";
+import CreatePostScreen from "./Screens/mainScreen/PostScreen/CreatePostScreen";
 import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
 
 import { Ionicons } from "@expo/vector-icons";
