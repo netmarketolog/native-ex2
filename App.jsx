@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { StatusBar } from 'expo-status-bar'
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -30,6 +31,7 @@ export default function App() {
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <NavigationContainer>{routing}</NavigationContainer>
+      <StatusBar style = "auto" />
     </View>
   );
 }
@@ -39,5 +41,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-// auth
