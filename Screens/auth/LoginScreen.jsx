@@ -128,6 +128,7 @@ image: {
 flex: 1,
 resizeMode: "cover",
 justifyContent: "flex-end",
+alignItems: "center",
 },
 wrapper: {
 backgroundColor: "#fff",
