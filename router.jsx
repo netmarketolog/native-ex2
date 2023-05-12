@@ -4,11 +4,11 @@ import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import LoginScreen from "./Screens/auth/LoginScreen";
-import RegistrationScreen from "./Screens/auth/RegistrationScreen";
-import PostsScreen from "./Screens/mainScreen/PostScreen/PostsScreen";
-import CreatePostScreen from "./Screens/mainScreen/PostScreen/CreatePostScreen";
-import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import RegistrationScreen from "./screens/auth/RegistrationScreen";
+import PostsScreen from "./screens/mainScreen/PostScreen/PostsScreen";
+import CreatePostScreen from "./screens/mainScreen/PostScreen/CreatePostScreen";
+import ProfileScreen from "./screens/mainScreen/ProfileScreen";
 
 import { Ionicons } from "@expo/vector-icons";
 

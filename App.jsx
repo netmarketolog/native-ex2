@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 

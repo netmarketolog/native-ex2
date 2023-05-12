@@ -125,8 +125,9 @@ export default function RegistrationScreen({ navigation }) {
                           onPress={() => navigation.navigate("Login")}
                           >
                           <Text style={styles.textLink}>
-                              Do you already have an account?{" "}
-                              <Text style={{ color: "#FF6C00" }}>Log-in?</Text>
+                              Do you already have an account?
+
+                              <Text style={{ color: "#FF6C00" }}> Log-in?</Text>
                           </Text>
                           </TouchableOpacity>
                       </View>

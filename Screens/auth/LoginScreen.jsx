@@ -106,7 +106,7 @@ export default function LoginScreen({ navigation }) {
                                 >
                                 <Text style={styles.textLink}>
                                     Don't have an account?
-                                    <Text style={{ color: "#FF6C00" }}>Registration?</Text>
+                                    <Text style={{ color: "#FF6C00" }}> Registration?</Text>
                                 </Text>
                                 </TouchableOpacity>
                             </View>
