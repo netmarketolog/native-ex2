@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Image, Text, Button } from "react-n
 
 import { Camera  } from "expo-camera";
 
-const CreatePostScreen = () => {
+const CreatePostScreen = ({navigation}) => {
   const [permission, requestPermission] = Camera.useCameraPermissions();
   const [imgRef, setImgRef] = useState(null); // Camera {}
   const [photo, setPhoto] = useState(null); // Хранит снимок 
@@ -13,14 +13,15 @@ const CreatePostScreen = () => {
     return <View />;
   }
 
-
-
-
   const takePhoto = async () => {
     const photo = await imgRef.takePictureAsync(); // Делает снимок и сохраняет его в каталог кеша приложения.
     setPhoto(photo.uri);
   };
 
+  const sendPhoto = () => {
+    console.log("navigation", navigation);
+    navigation.navigate("PostsScreen", {photo});
+  }
 
   return (
     <View style={styles.container}>
@@ -38,33 +39,40 @@ const CreatePostScreen = () => {
           </View>
         ):
         (<View style={styles.containerCamera} >
-          <Camera style={styles.camera} ref={setImgRef} >
-          {photo && (
-          <View style={styles.takePhotoContainer}>
-          <Image
-            source={{ uri: photo }}
-            style={{ height: "100%", width: "100%" }}
-          />
-        </View>
-        )}
-          {!photo && (<TouchableOpacity style={styles.cameraBtn} onPress={takePhoto}>
-            <Image source={require("../../../img/camera.png")} />
-          </TouchableOpacity>)}
-        </Camera>
-          <View style={{ flex: 1, marginTop: 8,}}>
-            {!photo ? (<TouchableOpacity
-              activeOpacity={0.7}
-              onPress={requestPermission}
-            >
-              <Text style={styles.btnTextCamera}>Загрузите фото</Text>
-            </TouchableOpacity>
-            ) : ( 
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => setPhoto(null)}
-            >
-              <Text style={styles.btnTextCamera}>Новое фото</Text>
+            <Camera style={styles.camera} ref={setImgRef} >
+            {photo && (
+            <View style={styles.takePhotoContainer}>
+            <Image
+              source={{ uri: photo }}
+              style={{ height: "100%", width: "100%" }}
+            />
+          </View>
+          )}
+            {!photo && (<TouchableOpacity style={styles.cameraBtn} onPress={takePhoto}>
+              <Image source={require("../../../img/camera.png")} />
             </TouchableOpacity>)}
+          </Camera>
+            <View style={{ flex: 1, marginTop: 8,}}>
+              {!photo ? (<TouchableOpacity
+                activeOpacity={0.7}
+                onPress={requestPermission}
+              >
+                <Text style={styles.btnTextCamera}>Загрузите фото</Text>
+              </TouchableOpacity>
+              ) : ( 
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => setPhoto(null)}
+              >
+                <Text style={styles.btnTextCamera}>Новое фото</Text>
+              </TouchableOpacity>)}
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{...styles.btnSend, backgroundColor: photo ? ("#FF6C00") : ("#F6F6F6"),}}
+                onPress={sendPhoto}
+                >
+                <Text style={{...styles.btnText,color:  photo ? ("#FFFFFF") : ("#BDBDBD"),}}>Опубликовать</Text>
+              </TouchableOpacity>
           </View>
         </View> ) 
         }
@@ -127,7 +135,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     },
   btnText: {
-    color: "#FFFFFF",
     fontSize: 16,
     lineHeight: 19,
     },
@@ -138,6 +145,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: "#BDBDBD",
+    },
+    btnSend:{
+      borderRadius: 100,
+      height: 51,
+      marginTop: 32,
+      justifyContent: "center",
+      alignItems: "center",
     },
 });
 export default CreatePostScreen;
