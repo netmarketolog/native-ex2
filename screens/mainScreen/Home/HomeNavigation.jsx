@@ -1,31 +1,28 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CommentsScreen } from './CommentsScreen';
-import DefaultScreen from './DefaultScreenPosts';
-import MapScreen from './MapScreen';
+import { PostsScreen } from './PostsScreen';
+import { MapScreen } from './MapScreen';
 
 const PostsStack = createStackNavigator();
 
-const PostsScreen = () => {
+export const HomeNavigation = () => {
   return (
-    <PostsStack.Navigator initialRouteName="DefaultScreen">
+    <PostsStack.Navigator initialRouteName="PostsScreen">
       <PostsStack.Screen
         options={{ headerShown: false }}
-        name="DefaultScreen"
-        component={DefaultScreen}
+        name="PostsScreen"
+        component={PostsScreen}
       />
       <PostsStack.Screen
         options={{ headerShown: false }}
-        name="CommentsScreen"
+        name="Comments"
         component={CommentsScreen}
       />
       <PostsStack.Screen
         options={{ headerShown: false }}
-        name="MapScreen"
+        name="Map"
         component={MapScreen}
       />
     </PostsStack.Navigator>
   );
 };
-
-export default PostsScreen;

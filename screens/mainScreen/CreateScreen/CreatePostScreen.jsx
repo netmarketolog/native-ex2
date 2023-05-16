@@ -43,13 +43,12 @@ const CreatePostScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     const photo = await imgRef.takePictureAsync(); // Делает снимок и сохраняет его в каталог кеша приложения.
-    const location = await Location.getCurrentPositionAsync();
+    const location = await Location.getLastKnownPositionAsync();
     setPhoto(photo.uri);
     setLocationCoords({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
-    console.log('location', location);
   };
 
   const sendPhoto = () => {
@@ -60,7 +59,7 @@ const CreatePostScreen = ({ navigation }) => {
       locationCoords,
     };
 
-    navigation.navigate('PostsScreen', post);
+    navigation.navigate('DefaultScreen', post);
     setPhoto(null);
     setTitle('');
     setLocation('');
@@ -178,7 +177,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 11,
     paddingTop: 60,
-
     borderBottomColor: 'rgba(0, 0, 0, 0.3)',
     borderBottomWidth: 1,
   },

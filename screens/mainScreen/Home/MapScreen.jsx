@@ -10,7 +10,7 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-export const MapScreen = ({ navigation, route }) => {
+const MapScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
@@ -19,24 +19,18 @@ export const MapScreen = ({ navigation, route }) => {
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
       }
-      if (route.params) {
-        const coords = {
-          latitude: route.params.latitude,
-          longitude: route.params.longitude,
-        };
-        setLocation(coords);
-      }
     };
+    setLocation(route.params);
   }, [route.params]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.screenTitle}>Map</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Default')}>
+        <TouchableOpacity onPress={() => navigation.navigate('DefaultScreen')}>
           <Image
             style={{ position: 'absolute', left: 16, bottom: 0 }}
-            source={require('../../images/arrow-left.png')}
+            source={require('../../../img/arrow-left.png')}
           />
         </TouchableOpacity>
       </View>
@@ -62,17 +56,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
+
   header: {
     width: '100%',
     paddingVertical: 11,
-    paddingTop: 30,
+    paddingTop: 60,
     borderBottomColor: 'rgba(0, 0, 0, 0.3)',
     borderBottomWidth: 1,
   },
   screenTitle: {
-    fontFamily: 'Roboto-Medium',
+    fontFamily: 'Roboto-Italic',
     fontSize: 17,
     lineHeight: 22,
     textAlign: 'center',
@@ -82,3 +76,5 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height - 120,
   },
 });
+
+export default MapScreen;

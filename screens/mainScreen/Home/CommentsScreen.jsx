@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Image,
   StyleSheet,
@@ -12,7 +13,7 @@ export const CommentsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.screenTitle}>Comments</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Default')}>
+        <TouchableOpacity onPress={() => navigation.navigate('DefaultScreen')}>
           <Image
             style={{ position: 'absolute', left: 16, bottom: 0 }}
             source={require('../../../img/arrow-left.png')}
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   screenTitle: {
-    fontFamily: 'Roboto-Medium',
+    fontFamily: 'Roboto-Italic',
     fontSize: 17,
     lineHeight: 22,
     textAlign: 'center',
