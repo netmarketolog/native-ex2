@@ -38,8 +38,8 @@ const MapScreen = ({ navigation, route }) => {
         style={styles.mapStyle}
         region={{
           ...location,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.006,
         }}
         showsUserLocation={true}
       >
