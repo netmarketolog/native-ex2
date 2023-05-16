@@ -43,7 +43,7 @@ const CreatePostScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     const photo = await imgRef.takePictureAsync(); // Делает снимок и сохраняет его в каталог кеша приложения.
-    const location = await Location.getLastKnownPositionAsync();
+    const location = await Location.getCurrentPositionAsync();
     setPhoto(photo.uri);
     setLocationCoords({
       latitude: location.coords.latitude,
