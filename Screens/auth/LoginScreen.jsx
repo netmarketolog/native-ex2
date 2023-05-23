@@ -47,7 +47,14 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSubmit = () => {
-    dispatch(logIn({ email, password }));
+    if (email !== '' && password !== '') {
+      dispatch(logIn({ email, password }));
+    } else {
+      setIsShowKeyboard(false);
+      return alert(
+        'Enter your email address and password, and verify that they are entered correctly!'
+      );
+    }
     reset();
     keyboardHide();
   };

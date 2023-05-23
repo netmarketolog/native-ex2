@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig';
 import { authSlice } from './authSlice';

@@ -1,130 +1,28 @@
-import React from 'react';
-import { View } from 'react-native';
-
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LoginScreen from './screens/auth/LoginScreen';
 import RegistrationScreen from './screens/auth/RegistrationScreen';
-import PostsScreen from './screens/mainScreen/Home/PostsScreen';
-import CreatePostScreen from './screens/mainScreen/CreateScreen/CreatePostScreen';
-import ProfileScreen from './screens/mainScreen/ProfileScreen/ProfileScreen';
-
-import { Ionicons } from '@expo/vector-icons';
+import { Default } from './screens/mainScreen/Default/Default';
 
 const AuthStack = createStackNavigator();
-const MainTab = createBottomTabNavigator();
 
-export const useRoute = isAuth => {
-  if (!isAuth) {
-    return (
-      <AuthStack.Navigator>
-        <AuthStack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Login"
-          component={LoginScreen}
-        />
-        <AuthStack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Registration"
-          component={RegistrationScreen}
-        />
-      </AuthStack.Navigator>
-    );
-  }
+export const useRoute = () => {
   return (
-    <MainTab.Navigator>
-      <MainTab.Screen
+    <AuthStack.Navigator initialRouteName={'Login'}>
+      <AuthStack.Screen
         options={{
           headerShown: false,
-          tabBarShowLabel: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            return (
-              <View
-                style={{
-                  width: 70,
-                  height: 40,
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: 82,
-                  backgroundColor: focused ? '#FF6C00' : '#ffffff',
-                }}
-              >
-                <Ionicons
-                  name="ios-grid-outline"
-                  size={size}
-                  color={focused ? '#ffffff' : '#bdbdbd'}
-                />
-              </View>
-            );
-          },
         }}
-        name="PostsScreen"
-        component={PostsScreen}
+        name="Login"
+        component={LoginScreen}
       />
-      <MainTab.Screen
+      <AuthStack.Screen
         options={{
           headerShown: false,
-          tabBarShowLabel: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            return (
-              <View
-                style={{
-                  width: 70,
-                  height: 40,
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-
-                  backgroundColor: focused ? '#FF6C00' : '#ffffff',
-                }}
-              >
-                <Ionicons
-                  name="ios-add"
-                  size={size}
-                  color={focused ? '#ffffff' : '#bdbdbd'}
-                />
-              </View>
-            );
-          },
         }}
-        name="CreatePostScreen"
-        component={CreatePostScreen}
+        name="Registration"
+        component={RegistrationScreen}
       />
-      <MainTab.Screen
-        options={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            return (
-              <View
-                style={{
-                  width: 70,
-                  height: 40,
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 82,
-                  backgroundColor: focused ? '#FF6C00' : '#ffffff',
-                }}
-              >
-                <Ionicons
-                  name="ios-person"
-                  size={size}
-                  color={focused ? '#ffffff' : '#bdbdbd'}
-                />
-              </View>
-            );
-          },
-        }}
-        name="ProfileScreen"
-        component={ProfileScreen}
-      />
-    </MainTab.Navigator>
+    </AuthStack.Navigator>
   );
 };
