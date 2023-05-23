@@ -14,6 +14,8 @@ import {
   Image,
   Keyboard,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { signUp } from '../redux/auth/authOperations';
 
 const windowWidth = Dimensions.get('window').width - 16 * 2;
 
@@ -24,6 +26,8 @@ export default function RegistrationScreen({ navigation }) {
   const [widthState, setWidthState] = useState(windowWidth);
   const [isOpenPassword, setIsOpenPassword] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChange = () => setWidthState(windowWidth);
@@ -42,6 +46,17 @@ export default function RegistrationScreen({ navigation }) {
     setLogin('');
     setEmail('');
     setPassword('');
+  };
+
+  const handleSubmit = () => {
+    if (login !== '' && email !== '' && password !== '') {
+      dispatch(signUp({ login, email, password }));
+    } else {
+      setIsShowKeyboard(false);
+      return alert('Fill in all the fields!!!');
+    }
+    reset();
+    keyboardHide();
   };
 
   const loginHandler = text => setLogin(text);
@@ -82,7 +97,7 @@ export default function RegistrationScreen({ navigation }) {
                       placeholder="Login"
                       style={styles.input}
                       onFocus={() => setIsShowKeyboard(true)}
-                      onSubmitEditing={keyboardHide}
+                      onSubmitEditing={handleSubmit}
                     />
                   </View>
                   <View style={{ marginTop: 16 }}>
@@ -92,7 +107,7 @@ export default function RegistrationScreen({ navigation }) {
                       placeholder="Email"
                       style={styles.input}
                       onFocus={() => setIsShowKeyboard(true)}
-                      onSubmitEditing={keyboardHide}
+                      onSubmitEditing={handleSubmit}
                     />
                   </View>
                   <View style={{ marginTop: 16 }}>
@@ -103,7 +118,7 @@ export default function RegistrationScreen({ navigation }) {
                       secureTextEntry={!isOpenPassword}
                       style={styles.input}
                       onFocus={() => setIsShowKeyboard(true)}
-                      onSubmitEditing={keyboardHide}
+                      onSubmitEditing={handleSubmit}
                     />
                     <Text style={styles.show} onPress={isOpenPasswordHandler}>
                       {isOpenPassword ? 'hide' : 'show'}
@@ -117,7 +132,7 @@ export default function RegistrationScreen({ navigation }) {
                     <TouchableOpacity
                       activeOpacity={0.7}
                       style={styles.btn}
-                      onPress={(keyboardHide, reset)}
+                      onPress={handleSubmit}
                     >
                       <Text style={styles.btnText}>Sign-up</Text>
                     </TouchableOpacity>

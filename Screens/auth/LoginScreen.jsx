@@ -14,6 +14,9 @@ import {
   Keyboard,
 } from 'react-native';
 
+import { useDispatch } from 'react-redux';
+import { logIn } from '../redux/auth/authOperations';
+
 const windowWidth = Dimensions.get('window').width - 16 * 2;
 
 export default function LoginScreen({ navigation }) {
@@ -22,6 +25,8 @@ export default function LoginScreen({ navigation }) {
   const [widthState, setWidthState] = useState(windowWidth);
   const [isOpenPassword, setIsOpenPassword] = useState(false);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const onChange = () => setWidthState(windowWidth);
@@ -39,6 +44,12 @@ export default function LoginScreen({ navigation }) {
   const reset = () => {
     setEmail('');
     setPassword('');
+  };
+
+  const handleSubmit = () => {
+    dispatch(logIn({ email, password }));
+    reset();
+    keyboardHide();
   };
 
   const emailHandler = text => setEmail(text);
@@ -71,7 +82,7 @@ export default function LoginScreen({ navigation }) {
                       placeholder="Email"
                       style={styles.input}
                       onFocus={() => setIsShowKeyboard(true)}
-                      onSubmitEditing={keyboardHide}
+                      onSubmitEditing={handleSubmit}
                     />
                   </View>
                   <View style={{ marginTop: 16 }}>
@@ -82,7 +93,7 @@ export default function LoginScreen({ navigation }) {
                       secureTextEntry={!isOpenPassword}
                       style={styles.input}
                       onFocus={() => setIsShowKeyboard(true)}
-                      onSubmitEditing={keyboardHide}
+                      onSubmitEditing={handleSubmit}
                     />
                     <Text style={styles.show} onPress={isOpenPasswordHandler}>
                       {isOpenPassword ? 'hide' : 'show'}
@@ -96,7 +107,7 @@ export default function LoginScreen({ navigation }) {
                     <TouchableOpacity
                       activeOpacity={0.7}
                       style={styles.btn}
-                      onPress={(keyboardHide, reset)}
+                      onPress={handleSubmit}
                     >
                       <Text style={styles.btnText}>Sign-in</Text>
                     </TouchableOpacity>

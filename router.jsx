@@ -8,7 +8,7 @@ import LoginScreen from './screens/auth/LoginScreen';
 import RegistrationScreen from './screens/auth/RegistrationScreen';
 import PostsScreen from './screens/mainScreen/Home/PostsScreen';
 import CreatePostScreen from './screens/mainScreen/CreateScreen/CreatePostScreen';
-import ProfileScreen from './screens/mainScreen/ProfileScreen';
+import ProfileScreen from './screens/mainScreen/ProfileScreen/ProfileScreen';
 
 import { Ionicons } from '@expo/vector-icons';
 

@@ -1,23 +1,26 @@
 import 'react-native-gesture-handler';
-import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { StatusBar } from 'expo-status-bar'
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from 'react-redux';
+import { store } from './screens/redux/store';
 
-import { useRoute } from "./router";
+import { NavigationContainer } from '@react-navigation/native';
+
+import { useRoute } from './router';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const routing = useRoute(true);
+  const routing = useRoute(false);
 
   const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Italic": require("./assets/fonts/Roboto-Italic.ttf"),
+    'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
+    'Roboto-Italic': require('./assets/fonts/Roboto-Italic.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -30,10 +33,12 @@ export default function App() {
     return null;
   }
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <NavigationContainer>{routing}</NavigationContainer>
-      <StatusBar style = "auto" />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <NavigationContainer>{routing}</NavigationContainer>
+        <StatusBar style="auto" />
+      </View>
+    </Provider>
   );
 }
 
