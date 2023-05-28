@@ -17,7 +17,6 @@ export const Main = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const routing = useRoute();
 
-  console.log(routing);
   return (
     <NavigationContainer>
       {isLoggedIn ? <Default /> : routing}

@@ -12,7 +12,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const DefaultScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
-  console.log('route.params', route.params);
 
   useEffect(() => {
     if (route.params) {

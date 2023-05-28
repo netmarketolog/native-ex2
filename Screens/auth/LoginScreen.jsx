@@ -68,7 +68,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.container}>
         <ImageBackground
           source={require('../../img/photoBG.png')}
-          style={styles.image}
+          style={styles.background}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : ''}
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
+  background: {
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'flex-end',

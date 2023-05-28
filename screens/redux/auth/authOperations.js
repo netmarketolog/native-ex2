@@ -18,7 +18,6 @@ export const signUp = createAsyncThunk(
         password
       );
       let user = userCredential.user;
-      console.log('user', user);
       await updateProfile(auth.currentUser, {
         displayName: login,
       });
@@ -27,7 +26,7 @@ export const signUp = createAsyncThunk(
         email: user.email,
         userId: user.uid,
       };
-      console.log(payload);
+
       return payload;
     } catch (e) {
       console.log(e.message);
@@ -50,7 +49,7 @@ export const logIn = createAsyncThunk(
         email: user.email,
         userId: user.uid,
       };
-      console.log(payload);
+
       return payload;
     } catch (e) {
       console.log(e.message);
