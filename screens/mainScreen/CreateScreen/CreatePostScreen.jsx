@@ -14,6 +14,9 @@ import {
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
 import * as MediaLibrary from 'expo-media-library';
+import { db, storage } from '../../firebase/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL, child } from 'firebase/storage';
+import { nanoid } from '@reduxjs/toolkit';
 
 const CreatePostScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null); // Запросы на доступ
@@ -51,7 +54,49 @@ const CreatePostScreen = ({ navigation }) => {
     });
   };
 
-  const sendPhoto = () => {
+  const uploadPhotoToServer = async () => {
+    const filename = nanoid();
+    const storageRef = ref(storage, `photos/${filename}`);
+    const response = await fetch(photo);
+    const blob = await response.blob();
+    await uploadBytes(storageRef, blob).then(snapshot => {
+      console.log('Uploaded a blob or file!');
+    });
+    const photoUrl = await getDownloadURL(storageRef);
+    console.log('photoUrl', photoUrl);
+    return photoUrl;
+
+    // await getDownloadURL(storageRef).then(function (url) {
+    //   const photoUrl = url;
+    //   console.log('photoUrl', photoUrl);
+    //   return photoUrl;
+    // });
+    // const uploadTask = storage.ref(`images/${filename}`).put(blob);
+    // uploadTask.on(
+    //   'state_changed',
+    //   snapshot => {},
+    //   error => {
+    //     console.log(error);
+    //   },
+    //   () => {
+    //     storage
+    //       .ref('images')
+    //       .child(filename)
+    //       .getDownloadURL()
+    //       .then(url => {
+    //         db.collection('posts').add({
+    //           photo: url,
+    //           title,
+    //           location,
+    //           locationCoords,
+    //         });
+    //       });
+    //   }
+    // );
+  };
+
+  const createPost = () => {
+    uploadPhotoToServer();
     const post = {
       photo,
       title,
@@ -143,7 +188,7 @@ const CreatePostScreen = ({ navigation }) => {
               backgroundColor:
                 photo && title && location ? '#FF6C00' : '#F6F6F6',
             }}
-            onPress={sendPhoto}
+            onPress={createPost}
           >
             <Text
               style={{
