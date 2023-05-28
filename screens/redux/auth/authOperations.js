@@ -6,7 +6,6 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig';
-import { authSlice } from './authSlice';
 
 export const signUp = createAsyncThunk(
   'auth / signUp ',
@@ -65,15 +64,26 @@ export const logOut = createAsyncThunk('auth / logOut ', async () => {
   }
 });
 
-export const refreshUser = () => async (dispatch, getState) => {
-  await onAuthStateChanged(auth, user => {
-    if (user) {
-      const payload = {
-        user: { login: user.displayName, email: user.email, userId: user.uid },
-        isLoggedIn: true,
-      };
-
-      dispatch(authSlice.actions.refreshUser(payload));
-    }
-  });
-};
+export const refreshUser = createAsyncThunk('auth / refreshUser ', async () => {
+  try {
+    await onAuthStateChanged(auth, user => {
+      if (user) {
+        const payload = {
+          login: user.displayName,
+          email: user.email,
+          userId: user.uid,
+        };
+        return payload;
+      } else {
+        const payload = {
+          login: null,
+          email: null,
+          userId: null,
+        };
+        return payload;
+      }
+    });
+  } catch (e) {
+    console.log(e.message);
+  }
+});
