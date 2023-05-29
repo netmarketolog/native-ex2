@@ -202,6 +202,11 @@ const styles = StyleSheet.create({
     lineHeight: 13,
     color: 'rgba(33, 33, 33, 0.8)',
   },
+  contentText: {
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#212121',
+  },
 });
 
 export default DefaultScreen;

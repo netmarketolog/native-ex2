@@ -8,11 +8,14 @@ import {
   View,
   FlatList,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../redux/selectors';
 import { db } from '../../firebase/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, collection } from 'firebase/firestore';
 import { nanoid } from '@reduxjs/toolkit';
 
 export const CommentsScreen = ({ navigation, route }) => {
@@ -20,8 +23,19 @@ export const CommentsScreen = ({ navigation, route }) => {
   const [allComments, setAllComments] = useState([]);
   const { postId, photoUrl } = route.params;
   const user = useSelector(selectUser);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  useEffect(() => {
+    getAllComments();
+  }, []);
+
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
 
   const createComment = async () => {
+    if (!comment) return;
     try {
       const id = nanoid();
       const newComment = {
@@ -34,82 +48,126 @@ export const CommentsScreen = ({ navigation, route }) => {
       await setDoc(doc(db, 'posts', postId, 'comments', id), newComment);
       setAllComments([...allComments, newComment]);
       setComment('');
-      Keyboard.dismiss();
+      keyboardHide();
     } catch (error) {
       console.log('Error adding comment: ', error.message);
     }
   };
 
+  const getAllComments = async () => {
+    try {
+      await onSnapshot(
+        collection(db, 'posts', postId, 'comments'),
+        querySnapshot => {
+          const fetchedComments = [];
+          querySnapshot.forEach(doc => {
+            fetchedComments.push(doc.data());
+          });
+          setAllComments(fetchedComments);
+        }
+      );
+    } catch (error) {
+      console.log('Error getting comments:', error.message);
+    }
+  };
+
+  const Comment = ({ item }) => {
+    const { userId, date, comment, userName } = item;
+    const commentTime = new Date(date.toDate()).toTimeString().slice(0, 5);
+    const day = new Date(date.toDate()).getDate();
+    const month = new Date(date.toDate()).getMonth() + 1;
+    const year = new Date(date.toDate()).getFullYear();
+    const commentDate = `${day}.${month}.${year} | ${commentTime}`;
+
+    return userId === user.userId ? (
+      <View style={styles.commentWrapper}>
+        <Image
+          style={styles.commentImage}
+          source={require('../../../img/bot.png')}
+        />
+        <View style={styles.textBox}>
+          <Text style={{ marginBottom: 8 }}>{comment}</Text>
+          <Text style={styles.commentDate}>{commentDate}</Text>
+        </View>
+      </View>
+    ) : (
+      <View style={{ ...styles.commentWrapper, flexDirection: 'row' }}>
+        <Image
+          style={{ ...styles.commentImage, marginRight: 16, marginLeft: 0 }}
+          source={require('../../../img/avatar.png')}
+        />
+        <View
+          style={{
+            ...styles.textBox,
+            borderTopStartRadius: 0,
+            borderTopEndRadius: 6,
+          }}
+        >
+          <Text style={{ marginBottom: 8 }}>{comment}</Text>
+          <Text style={{ ...styles.commentDate, textAlign: 'right' }}>
+            {commentDate}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
+  const commentHandler = text => setComment(text);
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Comments</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('DefaultScreen')}>
-          <Image
-            style={{ position: 'absolute', left: 16, bottom: 0 }}
-            source={require('../../../img/arrow-left.png')}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.main}>
-        <View style={styles.addPhoto}>
-          <Image style={styles.photo} source={{ uri: photoUrl }} />
-        </View>
-        <View style={styles.commetsSection}>
-          <View style={styles.commentWrapper}>
-            <Image
-              style={styles.commentImage}
-              source={require('../../../img/bot.png')}
-            />
-            <View style={styles.textBox}>
-              <Text style={{ marginBottom: 8 }}>
-                A fast 50mm like f1.8 would help with the bokeh. I’ve been using
-                primes as they tend to get a bit sharper images.
-              </Text>
-              <Text style={styles.commentDate}>09 июня, 2020 | 09:14</Text>
-            </View>
-          </View>
-          <View style={{ ...styles.commentWrapper, flexDirection: 'row' }}>
-            <Image
-              style={{ ...styles.commentImage, marginRight: 16, marginLeft: 0 }}
-              source={require('../../../img/avatar.png')}
-            />
-            <View
-              style={{
-                ...styles.textBox,
-                borderTopStartRadius: 0,
-                borderTopEndRadius: 6,
-              }}
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : ''}
+        style={{ flex: 1 }}
+      >
+        <View
+          style={{
+            ...styles.container,
+          }}
+        >
+          <View style={styles.header}>
+            <Text style={styles.screenTitle}>Comments</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('DefaultScreen')}
             >
-              <Text style={{ marginBottom: 8 }}>
-                A fast 50mm like f1.8 would help with the bokeh. I’ve been using
-                primes as they tend to get a bit sharper images.
-              </Text>
-              <Text style={{ ...styles.commentDate, textAlign: 'right' }}>
-                09 июня, 2020 | 09:14
-              </Text>
+              <Image
+                style={{ position: 'absolute', left: 16, bottom: 0 }}
+                source={require('../../../img/arrow-left.png')}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.main}>
+            <View style={styles.addPhoto}>
+              <Image style={styles.photo} source={{ uri: photoUrl }} />
+            </View>
+            <FlatList
+              style={{ marginBottom: 100 }}
+              data={allComments}
+              renderItem={Comment}
+              keyExtractor={item => item.date}
+            />
+          </View>
+          <View style={styles.footer}>
+            <View>
+              <TextInput
+                style={styles.footerInput}
+                placeholder="Comment..."
+                placeholderTextColor="#bdbdbd"
+                value={comment}
+                onChangeText={commentHandler}
+                onFocus={() => setIsShowKeyboard(true)}
+                onSubmitEditing={createComment}
+              />
+              <TouchableOpacity
+                onPress={createComment}
+                style={{ position: 'absolute', top: 8, right: 8 }}
+              >
+                <Image source={require('../../../img/send.png')} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <View>
-          <TextInput
-            style={styles.footerInput}
-            placeholder="Comment..."
-            placeholderTextColor="#bdbdbd"
-            value={comment}
-            onChangeText={setComment}
-          />
-          <TouchableOpacity
-            onPress={createComment}
-            style={{ position: 'absolute', top: 8, right: 8 }}
-          >
-            <Image source={require('../../../img/send.png')} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({
@@ -173,24 +231,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 12,
     color: '#bdbdbd',
-  },
-  cameraBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#ffffff',
-  },
-  button: {
-    backgroundColor: '#F6f6f6',
-    borderRadius: 25.5,
-    padding: 16,
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  buttonTitle: {
-    textAlign: 'center',
   },
   footer: {
     position: 'absolute',
