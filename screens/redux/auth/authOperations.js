@@ -64,26 +64,35 @@ export const logOut = createAsyncThunk('auth / logOut ', async () => {
   }
 });
 
-export const refreshUser = createAsyncThunk('auth / refreshUser ', async () => {
+export const refreshUser = createAsyncThunk('auth/refreshUser', async () => {
   try {
-    await onAuthStateChanged(auth, user => {
-      if (user) {
-        const payload = {
-          login: user.displayName,
-          email: user.email,
-          userId: user.uid,
-        };
-        return payload;
-      } else {
-        const payload = {
-          login: null,
-          email: null,
-          userId: null,
-        };
-        return payload;
-      }
+    const user = await new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, user => {
+        if (user) {
+          resolve(user);
+        } else {
+          reject(new Error('User not found'));
+        }
+      });
     });
+
+    if (user) {
+      const payload = {
+        login: user.displayName,
+        email: user.email,
+        userId: user.uid,
+      };
+      return payload;
+    } else {
+      const payload = {
+        login: null,
+        email: null,
+        userId: null,
+      };
+      return payload;
+    }
   } catch (e) {
     console.log(e.message);
+    throw e; // rethrow the error to be handled by the caller
   }
 });

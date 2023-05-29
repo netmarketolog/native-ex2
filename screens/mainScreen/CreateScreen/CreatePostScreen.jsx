@@ -10,12 +10,15 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/selectors';
 
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
 import * as MediaLibrary from 'expo-media-library';
-import { db, storage } from '../../firebase/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL, child } from 'firebase/storage';
+import { db, storage } from '../../firebase/firebaseConfig'; // Инициализация БД
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Загрузка файлов
+import { collection, addDoc } from 'firebase/firestore'; // Добавление документа в коллекцию
 import { nanoid } from '@reduxjs/toolkit';
 
 const CreatePostScreen = ({ navigation }) => {
@@ -25,6 +28,8 @@ const CreatePostScreen = ({ navigation }) => {
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [locationCoords, setLocationCoords] = useState(null);
+
+  const { login, userId } = useSelector(selectUser);
 
   useEffect(() => {
     (async () => {
@@ -65,46 +70,26 @@ const CreatePostScreen = ({ navigation }) => {
     const photoUrl = await getDownloadURL(storageRef);
     console.log('photoUrl', photoUrl);
     return photoUrl;
-
-    // await getDownloadURL(storageRef).then(function (url) {
-    //   const photoUrl = url;
-    //   console.log('photoUrl', photoUrl);
-    //   return photoUrl;
-    // });
-    // const uploadTask = storage.ref(`images/${filename}`).put(blob);
-    // uploadTask.on(
-    //   'state_changed',
-    //   snapshot => {},
-    //   error => {
-    //     console.log(error);
-    //   },
-    //   () => {
-    //     storage
-    //       .ref('images')
-    //       .child(filename)
-    //       .getDownloadURL()
-    //       .then(url => {
-    //         db.collection('posts').add({
-    //           photo: url,
-    //           title,
-    //           location,
-    //           locationCoords,
-    //         });
-    //       });
-    //   }
-    // );
   };
 
-  const createPost = () => {
-    uploadPhotoToServer();
-    const post = {
-      photo,
+  const uploadPostToServer = async () => {
+    const photoUrl = await uploadPhotoToServer();
+    const id = nanoid();
+    await addDoc(collection(db, 'posts'), {
+      id,
+      login,
+      userId,
+      photoUrl,
       title,
       location,
       locationCoords,
-    };
+    });
+  };
 
-    navigation.navigate('DefaultScreen', post);
+  const createPost = async () => {
+    await uploadPostToServer();
+
+    navigation.navigate('DefaultScreen');
     setPhoto(null);
     setTitle('');
     setLocation('');

@@ -7,25 +7,48 @@ import {
   Image,
   Text,
 } from 'react-native';
+import { onSnapshot, collection } from 'firebase/firestore';
 
 import { MaterialIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '../../redux/selectors';
+import { logOut } from '../../redux/auth/authOperations';
+import { db } from '../../firebase/firebaseConfig';
 
-const DefaultScreen = ({ navigation, route }) => {
+const DefaultScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const dispatch = useDispatch();
+  const { login, email } = useSelector(selectUser);
+
+  const handleSubmit = () => {
+    dispatch(logOut());
+  };
+
+  const getAllPosts = async () => {
+    try {
+      await onSnapshot(collection(db, 'posts'), querySnapshot => {
+        const fetchedPosts = [];
+        querySnapshot.forEach(doc => {
+          fetchedPosts.push(doc.data());
+        });
+        setPosts(fetchedPosts);
+      });
+    } catch (error) {
+      console.log('Error getting posts:', error.message);
+    }
+  };
 
   useEffect(() => {
-    if (route.params) {
-      setPosts(prevState => [...prevState, route.params]);
-    }
-  }, [route.params]);
+    getAllPosts();
+  }, []);
 
   const Item = ({ item }) => {
-    const { photo, title, location, locationCoords } = item;
+    const { photoUrl, title, location, locationCoords } = item;
     return (
       <View style={{ marginBottom: 24 }}>
         <Image
           style={{ width: '100%', height: 240, borderRadius: 8 }}
-          source={{ uri: photo }}
+          source={{ uri: photoUrl }}
         />
         <Text
           style={{
@@ -99,7 +122,7 @@ const DefaultScreen = ({ navigation, route }) => {
         <TouchableOpacity
           style={styles.logout}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Login')}
+          onPress={handleSubmit}
         >
           <MaterialIcons name="logout" size={24} color="black" />
         </TouchableOpacity>
@@ -112,14 +135,14 @@ const DefaultScreen = ({ navigation, route }) => {
             source={require('../../../img/user.jpg')}
           />
           <View>
-            <Text style={styles.userName}>Natali Romanova</Text>
-            <Text style={styles.userEmail}>email@example.com</Text>
+            <Text style={styles.userName}>{login}</Text>
+            <Text style={styles.userEmail}> {email} </Text>
           </View>
         </View>
         <FlatList
           data={posts}
           renderItem={Item}
-          keyExtractor={item => item.photo}
+          keyExtractor={item => item.id}
         />
       </View>
     </View>
