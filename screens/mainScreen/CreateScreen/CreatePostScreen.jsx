@@ -18,7 +18,7 @@ import * as Location from 'expo-location';
 import * as MediaLibrary from 'expo-media-library';
 import { db, storage } from '../../firebase/firebaseConfig'; // Инициализация БД
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Загрузка файлов
-import { collection, addDoc } from 'firebase/firestore'; // Добавление документа в коллекцию
+import { doc, setDoc } from 'firebase/firestore'; // Добавление документа в коллекцию
 import { nanoid } from '@reduxjs/toolkit';
 
 const CreatePostScreen = ({ navigation }) => {
@@ -60,22 +60,21 @@ const CreatePostScreen = ({ navigation }) => {
   };
 
   const uploadPhotoToServer = async () => {
-    const filename = nanoid();
-    const storageRef = ref(storage, `photos/${filename}`);
+    const id = nanoid();
+    const storageRef = ref(storage, `photos/${id}`);
     const response = await fetch(photo);
     const blob = await response.blob();
     await uploadBytes(storageRef, blob).then(snapshot => {
       console.log('Uploaded a blob or file!');
     });
     const photoUrl = await getDownloadURL(storageRef);
-    console.log('photoUrl', photoUrl);
-    return photoUrl;
+    return { photoUrl, id };
   };
 
   const uploadPostToServer = async () => {
-    const photoUrl = await uploadPhotoToServer();
-    const id = nanoid();
-    await addDoc(collection(db, 'posts'), {
+    const { photoUrl, id } = await uploadPhotoToServer();
+    const postRef = doc(db, 'posts', id); // Задайте имя документа
+    await setDoc(postRef, {
       id,
       login,
       userId,
@@ -88,7 +87,6 @@ const CreatePostScreen = ({ navigation }) => {
 
   const createPost = async () => {
     await uploadPostToServer();
-
     navigation.navigate('DefaultScreen');
     setPhoto(null);
     setTitle('');

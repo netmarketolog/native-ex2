@@ -43,7 +43,7 @@ const DefaultScreen = ({ navigation }) => {
   }, []);
 
   const Item = ({ item }) => {
-    const { photoUrl, title, location, locationCoords } = item;
+    const { id, photoUrl, title, location, locationCoords } = item;
     return (
       <View style={{ marginBottom: 24 }}>
         <Image
@@ -75,7 +75,12 @@ const DefaultScreen = ({ navigation }) => {
               }}
             >
               <TouchableOpacity
-                onPress={() => navigation.navigate('CommentsScreen')}
+                onPress={() =>
+                  navigation.navigate('CommentsScreen', {
+                    postId: id,
+                    photoUrl: photoUrl,
+                  })
+                }
               >
                 <Image
                   style={{ marginRight: 6 }}

@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,9 +6,40 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  FlatList,
+  Keyboard,
 } from 'react-native';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../redux/selectors';
+import { db } from '../../firebase/firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
+import { nanoid } from '@reduxjs/toolkit';
 
-export const CommentsScreen = ({ navigation }) => {
+export const CommentsScreen = ({ navigation, route }) => {
+  const [comment, setComment] = useState('');
+  const [allComments, setAllComments] = useState([]);
+  const { postId, photoUrl } = route.params;
+  const user = useSelector(selectUser);
+
+  const createComment = async () => {
+    try {
+      const id = nanoid();
+      const newComment = {
+        userName: user.login,
+        comment,
+        date: new Date(),
+        userId: user.userId,
+        id,
+      };
+      await setDoc(doc(db, 'posts', postId, 'comments', id), newComment);
+      setAllComments([...allComments, newComment]);
+      setComment('');
+      Keyboard.dismiss();
+    } catch (error) {
+      console.log('Error adding comment: ', error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -22,10 +53,7 @@ export const CommentsScreen = ({ navigation }) => {
       </View>
       <View style={styles.main}>
         <View style={styles.addPhoto}>
-          <Image
-            style={styles.photo}
-            source={require('../../../img/img.jpg')}
-          />
+          <Image style={styles.photo} source={{ uri: photoUrl }} />
         </View>
         <View style={styles.commetsSection}>
           <View style={styles.commentWrapper}>
@@ -70,11 +98,15 @@ export const CommentsScreen = ({ navigation }) => {
             style={styles.footerInput}
             placeholder="Comment..."
             placeholderTextColor="#bdbdbd"
+            value={comment}
+            onChangeText={setComment}
           />
-          <Image
-            source={require('../../../img/send.png')}
+          <TouchableOpacity
+            onPress={createComment}
             style={{ position: 'absolute', top: 8, right: 8 }}
-          />
+          >
+            <Image source={require('../../../img/send.png')} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -83,6 +115,7 @@ export const CommentsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   header: {
     paddingVertical: 11,
@@ -113,12 +146,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e8e8e8',
     backgroundColor: '#f6f6f6',
-  },
-  addPhotoText: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#bdbdbd',
   },
   commentWrapper: {
     flexDirection: 'row-reverse',
@@ -154,19 +181,6 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     backgroundColor: '#ffffff',
-  },
-  input: {
-    height: 50,
-    width: '100%',
-    borderColor: '#ffffff',
-    borderWidth: 1,
-    borderBottomColor: '#e8e8e8',
-    justifyContent: 'center',
-    marginBottom: 16,
-    fontFamily: 'Roboto-Regular',
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#BDBDBD',
   },
   button: {
     backgroundColor: '#F6f6f6',
