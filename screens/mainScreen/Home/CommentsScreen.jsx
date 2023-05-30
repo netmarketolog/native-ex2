@@ -25,9 +25,11 @@ export const CommentsScreen = ({ navigation, route }) => {
   const user = useSelector(selectUser);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
+  // при добавлении нового комментария, не подтягивается дата
+
   useEffect(() => {
     getAllComments();
-  }, []);
+  }, [comment]);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -46,7 +48,7 @@ export const CommentsScreen = ({ navigation, route }) => {
         id,
       };
       await setDoc(doc(db, 'posts', postId, 'comments', id), newComment);
-      setAllComments([...allComments, newComment]);
+      setAllComments([newComment, ...allComments]);
       setComment('');
       keyboardHide();
     } catch (error) {
@@ -63,6 +65,7 @@ export const CommentsScreen = ({ navigation, route }) => {
           querySnapshot.forEach(doc => {
             fetchedComments.push(doc.data());
           });
+          fetchedComments.sort((a, b) => b.date.seconds - a.date.seconds);
           setAllComments(fetchedComments);
         }
       );
@@ -73,11 +76,18 @@ export const CommentsScreen = ({ navigation, route }) => {
 
   const Comment = ({ item }) => {
     const { userId, date, comment, userName } = item;
-    const commentTime = new Date(date.toDate()).toTimeString().slice(0, 5);
-    const day = new Date(date.toDate()).getDate();
-    const month = new Date(date.toDate()).getMonth() + 1;
-    const year = new Date(date.toDate()).getFullYear();
-    const commentDate = `${day}.${month}.${year} | ${commentTime}`;
+    const commentTime = new Date(date.seconds * 1000)
+      .toTimeString()
+      .slice(0, 5);
+    const commentDateFerst = new Date(date.seconds * 1000).toLocaleDateString(
+      'en-US',
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }
+    );
+    const commentDate = `${commentDateFerst} | ${commentTime}`;
 
     return userId === user.userId ? (
       <View style={styles.commentWrapper}>
@@ -190,6 +200,7 @@ const styles = StyleSheet.create({
   main: {
     paddingHorizontal: 16,
     paddingTop: 32,
+    paddingBottom: 16,
     height: '100%',
   },
   addPhoto: {

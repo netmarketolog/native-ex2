@@ -40,6 +40,8 @@ const ProfileScreen = ({ navigation }) => {
       querySnapshot.forEach(doc => {
         posts.push(doc.data());
       });
+      posts.sort((a, b) => b.date.seconds - a.date.seconds);
+
       setMyPosts(posts);
     } catch (error) {
       console.log('Error getting documents: ', error.massage);

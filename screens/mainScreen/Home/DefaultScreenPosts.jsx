@@ -31,6 +31,9 @@ const DefaultScreen = ({ navigation }) => {
         querySnapshot.forEach(doc => {
           fetchedPosts.push(doc.data());
         });
+        console.log(fetchedPosts);
+        fetchedPosts.sort((a, b) => b.date.seconds - a.date.seconds);
+
         setPosts(fetchedPosts);
       });
     } catch (error) {

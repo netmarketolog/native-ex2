@@ -50,48 +50,67 @@ const CreatePostScreen = ({ navigation }) => {
   }
 
   const takePhoto = async () => {
-    const photo = await imgRef.takePictureAsync(); // Делает снимок и сохраняет его в каталог кеша приложения.
-    const location = await Location.getCurrentPositionAsync();
-    setPhoto(photo.uri);
-    setLocationCoords({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
+    try {
+      const photo = await imgRef.takePictureAsync(); // Делает снимок и сохраняет его в каталог кеша приложения.
+      const location = await Location.getCurrentPositionAsync();
+      setPhoto(photo.uri);
+      setLocationCoords({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    } catch (error) {
+      console.log('Error taking photo: ', error.message);
+    }
   };
 
   const uploadPhotoToServer = async () => {
-    const id = nanoid();
-    const storageRef = ref(storage, `photos/${id}`);
-    const response = await fetch(photo);
-    const blob = await response.blob();
-    await uploadBytes(storageRef, blob).then(snapshot => {
-      console.log('Uploaded a blob or file!');
-    });
-    const photoUrl = await getDownloadURL(storageRef);
-    return { photoUrl, id };
+    try {
+      const id = nanoid();
+      const storageRef = ref(storage, `photos/${id}`);
+      const response = await fetch(photo);
+      const blob = await response.blob();
+      await uploadBytes(storageRef, blob).then(snapshot => {
+        console.log('Uploaded a blob or file!');
+      });
+      const photoUrl = await getDownloadURL(storageRef);
+      return { photoUrl, id };
+    } catch (error) {
+      console.log('Error uploading photo: ', error.message);
+      throw error;
+    }
   };
 
   const uploadPostToServer = async () => {
-    const { photoUrl, id } = await uploadPhotoToServer();
-    const postRef = doc(db, 'posts', id); // Задайте имя документа
-    await setDoc(postRef, {
-      id,
-      login,
-      userId,
-      photoUrl,
-      title,
-      location,
-      locationCoords,
-    });
+    try {
+      const { photoUrl, id } = await uploadPhotoToServer();
+      const postRef = doc(db, 'posts', id); // Задайте имя документа
+      await setDoc(postRef, {
+        id,
+        login,
+        userId,
+        photoUrl,
+        title,
+        location,
+        locationCoords,
+        date: new Date(),
+      });
+    } catch (error) {
+      console.log('Error uploading post: ', error.message);
+      throw error;
+    }
   };
 
   const createPost = async () => {
-    await uploadPostToServer();
-    navigation.navigate('DefaultScreen');
-    setPhoto(null);
-    setTitle('');
-    setLocation('');
-    setLocationCoords(null);
+    try {
+      await uploadPostToServer();
+      navigation.navigate('DefaultScreen');
+      setPhoto(null);
+      setTitle('');
+      setLocation('');
+      setLocationCoords(null);
+    } catch (error) {
+      console.log('Error creating post: ', error.message);
+    }
   };
 
   return (
